@@ -1,45 +1,71 @@
 # Exercise 06_15 from Deitel: Intro to Python for CS
 
-"""Modify the script RollDie.py that we provided with this chapter’s examples to simulate rolling two dice.
-Calculate the sum of the two values.
-Each die has a value from 1 to 6, so the sum of the values will vary from 2 to 12,
-with 7 being the most frequent sum, and 2 and 12 the least frequent.
-If you roll the dice 36,000 times:
-• The values 2 and 12 each occur 1/36th (2.778%) of the time, so you should expect about 1000 of each.
-• The values 3 and 11 each occur 2/36ths (5.556%) of the time, so you should expect about 2000 of each, and so on.
-Use a command-line argument to obtain the number of rolls.
-Display a bar plot summarizing the roll frequencies.
-The following screen captures show the final bar plots for sample executions of 360, 36,000 and 36,000,000 rolls.
-Use the Seaborn barplot function’s optional orient keyword argument to specify a horizontal bar plot.
+"""
+Modify your simulation of rolling two dice from Exercise 5.32:
+Update the bar plot dynamically as you roll the dice.
+Use the techniques you learned in Section 6.4.2.
 """
 
 import random
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 import seaborn as sns
-import numpy as np
 import sys
 
 
+def plot_update(current_frame, num_rolls_to_make, rolls_frequencies):
+    """
+    Updates the barplot via FuncAnimation.
+    :param current_frame: Int, number of current frame being processed
+    :param num_rolls_to_make: Int, how many times to roll two dice
+    :param rolls_frequencies: Dict, contains two-dice sums and their frequencies
+    :return: Updated barplot.
+    """
+    # Clear the axes
+    plt.cla()
+
+    # Roll two dices required number of times, on each roll calculate sum and update the frequencies dict
+    for i in range(num_rolls_to_make):
+        current_roll_sum = random.randrange(1, 7) + random.randrange(1, 7)
+        rolls_frequencies[current_roll_sum] = rolls_frequencies.get(current_roll_sum, 0) + 1
+
+    # Define style, draw barplot, define axes labels and chart title
+    sns.set_style("whitegrid")
+    my_frame = sns.barplot(x=[rolls_frequencies[k] for k in sorted(rolls_frequencies.keys())],
+                           y=sorted(rolls_frequencies.keys()), orient="horizontal", palette="bright")
+    my_frame.set(xlabel="Frequencies", ylabel="Two-Dice Sums")
+    title = f"Displaying Frame No. {current_frame + 2}\nTotal Rolls so far: {sum(rolls_frequencies.values()):,}"
+    my_frame.set_title(title)
+
+    # Provide additional space to the right to accommodate annotations
+    my_frame.set_xlim(right=max(rolls_frequencies.values()) * 1.15)
+
+    # Calculate coordinates for and display annotations
+    for bar, frequency in zip(my_frame.patches, [rolls_frequencies[k] for k in sorted(rolls_frequencies.keys())]):
+        text = f"{frequency:,}\n{frequency / sum(rolls_frequencies.values()):.2%}"
+        text_x = bar.get_width() + 1
+        text_y = bar.get_y() + bar.get_height() / 2.0
+        my_frame.text(text_x, text_y, text, ha="left", va="center")
+
+
+# Provide default value for the total number of frames to be displayed
+# Provide default value for the number of two-dice rolls per frame
 if len(sys.argv) == 1:
-    sys.argv.append("36000")
+    sys.argv.append("600")
+    sys.argv.append("100")
 
-two_dice_rolls = [random.randrange(1, 7) + random.randrange(1, 7) for x in range(int(sys.argv[1]))]
+# Get total number of frames and rolls per frame from provided command line arguments
+total_num_frames = int(sys.argv[1])
+rolls_per_frame = int(sys.argv[2])
 
-roll_sums, sums_frequencies = np.unique(two_dice_rolls, return_counts=True)
+# Create empty dict tto store frequencies of rolled two-dice sums
+two_dice_sums_frequencies = {}
 
-sns.set_style("whitegrid")
+# Draw window for the chart
+my_window = plt.figure(f"Rolling Two Dice {total_num_frames * rolls_per_frame:,} Times")
 
-my_chart = sns.barplot(y=roll_sums, x=sums_frequencies, palette="bright", orient="horizontal")
-title = f"Rolling Two Dice {len(two_dice_rolls):,} Times"
-my_chart.set_title(title)
-my_chart.set(xlabel="Frequency", ylabel="Two Dice Sum")
-
-my_chart.set_xlim(right=max(sums_frequencies) * 1.1)
-
-for bar, frequency in zip(my_chart.patches, sums_frequencies):
-    text_x_coord = bar.get_width() * 1.01
-    text_y_coord = bar.get_y() + 0.5 * bar.get_height()
-    text = f'{frequency:,}\n{frequency / len(two_dice_rolls):.1%}'
-    my_chart.text(text_x_coord, text_y_coord, text, fontsize=10, va="center", ha="left")
+# Define FuncAnimation to draw the animation
+my_animation = animation.FuncAnimation(my_window, plot_update, frames=total_num_frames, repeat=False, interval=33,
+                                       fargs=(rolls_per_frame, two_dice_sums_frequencies))
 
 plt.show()
