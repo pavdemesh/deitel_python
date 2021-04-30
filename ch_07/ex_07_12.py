@@ -157,6 +157,8 @@ def check_board_for_winner(board, symbol: str):
     # Check for two diagonals:
     diagonal_1 = np.array([True])
     diagonal_2 = np.array([True])
+    diagonal_3 = np.array([True])
+    diagonal_4 = np.array([True])
 
     # Check diagonal_1
     k, i, j = 0, 0, 0
@@ -169,13 +171,33 @@ def check_board_for_winner(board, symbol: str):
         return True
 
     # Check diagonal_2
-    k, i, j = board_size - 1, 0, 0
+    k, i, j = 0, 0, board_size - 1
     for level in range(board.shape[0]):
         diagonal_2 = np.append(diagonal_2, board[k][i][j] == symbol)
-        k -= 1
+        k += 1
         i += 1
-        j += 1
+        j -= 1
     if all(diagonal_2):
+        return True
+
+    # Check diagonal 3
+    k, i, j = 0, board_size - 1, 0
+    for level in range(board.shape[0]):
+        diagonal_3 = np.append(diagonal_3, board[k][i][j] == symbol)
+        k += 1
+        i -= 1
+        j += 1
+    if all(diagonal_3):
+        return True
+
+    # Check diagonal 4
+    k, i, j = 0, board_size - 1, board_size - 1
+    for level in range(board.shape[0]):
+        diagonal_4 = np.append(diagonal_4, board[k][i][j] == symbol)
+        k += 1
+        i -= 1
+        j -= 1
+    if all(diagonal_4):
         return True
 
 
@@ -221,7 +243,7 @@ def play_human_vs_robot():
 
         # Getting input and checking result for Robot
         elif counter_moves % 2 == 1:
-            print("Robot plays. Board after Robot;s move:")
+            print("Robot plays. Board after Robot's move:")
             plane_ind, row_ind, col_ind = get_valid_move_robot(tic_tac_toe_board)
             tic_tac_toe_board[plane_ind][row_ind][col_ind] = "O"
             winner_is_robot = game_ended = check_board_for_winner(tic_tac_toe_board, "O")
@@ -291,6 +313,7 @@ def play_robot_vs_human():
         print("Game ended with tie!")
 
 
+# Ask user to decide who shall start
 human_first = bool(int(input("Who should start? 0 for Robot, 1 for Human: ")))
 
 if human_first:
