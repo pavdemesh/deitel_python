@@ -1,4 +1,4 @@
-# Exercise 07_24 from Deitel: Intro to Python for CS
+# Exercise 07_24_b from Deitel: Intro to Python for CS
 
 """
 Knight’s Tour problem, originally proposed by the mathematician Euler.
