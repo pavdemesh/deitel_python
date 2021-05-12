@@ -1,0 +1,1 @@
+This text 55 contains 8 digits, 13 whitespaces, 9 words and 75 nondigit characters.
