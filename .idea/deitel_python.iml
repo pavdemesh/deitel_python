@@ -4,5 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="mipt_cs_on_python3" />
+    <orderEntry type="module" module-name="interview_preps" />
   </component>
 </module>

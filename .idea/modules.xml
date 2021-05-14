@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/deitel_python.iml" filepath="$PROJECT_DIR$/.idea/deitel_python.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../interview_preps/.idea/interview_preps.iml" filepath="$PROJECT_DIR$/../interview_preps/.idea/interview_preps.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mipt_cs_on_python3/.idea/mipt_cs_on_python3.iml" filepath="$PROJECT_DIR$/../mipt_cs_on_python3/.idea/mipt_cs_on_python3.iml" />
     </modules>
   </component>
 </project>
